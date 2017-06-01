@@ -11,6 +11,7 @@ vragenMannen = ["Kunt u overweg met het nieuws?", "Leest u via het internet het 
 vragenVrouwen = ["Heeft u contact met familie via het internet?", "Heeft u meer dan drie dagen per week contact met uw familie?" , "Doet u spelletjes op uw computer?", "Maakt u hierbij dan gebruik van het internet?", "Kunt u muziek/films/spelletjes downloaden?"];
 
 eindVragen = ["Heeft u wel eens last gehad van?"];
+eindVragenMogelijkheden = ["Spam", "Virus", "Geblokkeerde telefoonnummers/anoniem", "Internetfraude"];
 #list met antwoorden
 antwoorden = [];
 
@@ -18,7 +19,7 @@ antwoorden = [];
 def toonVragen(vragen):
     for i in range(len(vragen)):
         print("")
-        antwoord = input(vragen[i]);
+        antwoord = input(vragen[i] + " ");
         #Als een antwoord binnen de vragen mannenlijst nee is, worden er geen verdere vragen gesteld
         #en gaat de quiz verder bij de algemene vragen
         if antwoord == "n" and i == 0 and vragen[0] == beginVragen[0]:
@@ -41,18 +42,19 @@ def supportLinesToevoegenAanBestand(m, antwoorden):
         data.writelines("Eindvragen: " + "\n");
         antwoordenToevoegenAanBestand(m,antwoorden[m]);
         return;
-    if(m > 5 and antwoorden[5] == 'j'):
+    if(m > len(beginVragen) - 1 and antwoorden[5] == 'j'):
         data.writelines("Hoofdvragen mannen:" + "\n");
-    elif(m > 5 and antwoorden[5] == 'n'):
+    elif(m > len(beginVragen) - 1 and antwoorden[5] == 'n'):
         data.writelines("Hoofdvragen vrouwen:" + "\n");
     antwoordenToevoegenAanBestand(m,antwoorden[m]);
 
 def antwoordenToevoegenAanBestand(m, antwoord):
     if(antwoord == 'j'):
-        data.writelines("Vraag: "   + str(m) + ": Ja"  + "\n");
+        data.writelines("Vraag "   + str(m + 1) + ": Ja"  + "\n");
+    elif(antwoord == 'n'):
+        data.writelines("Vraag " + str(m + 1) + ": Nee"  + "\n");
     else:
-        data.writelines("Vraag: " + str(m) + ": Nee"  + "\n");
-
+        data.writelines("Vraag " + str(m + 1) + ": " + antwoord);
 #Main program
 print("Welkom bij de vragenlijst!");
 print("Het invullen zal niet lang duren! Alle vragen kunnen enkel beantwoorden met j (ja) of n (nee)");
@@ -71,18 +73,25 @@ if antwoorden[5] == "j":
 else:
     toonVragen(vragenVrouwen);
     
-
     
 #Toont de eindvragen
 for k in range(len(eindVragen)):
     print("");
-    antwoorden.append(input(eindVragen[k]));
+    print("Vul hier de bovenstaande mogelijkheden in:");
+    print(eindVragen[k]);
+    
+    for n in range(len(eindVragenMogelijkheden)):
+        print("- " + eindVragenMogelijkheden[n] + "\n");
+
+    antwoord = input("Mogelijkheden");
+    antwoorden.append(antwoord);
 
 
 data = open(filename, 'a');
 for m in range(len(antwoorden)):
     supportLinesToevoegenAanBestand(m, antwoorden);   
 
+print("Bedankt voor uw tijd!");
 data.close();
 
 
